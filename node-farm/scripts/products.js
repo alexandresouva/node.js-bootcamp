@@ -1,7 +1,6 @@
 import fs from 'fs';
-import path from 'path';
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import path, { dirname } from 'path';
 
 // Variables equivalents to __dirname and __filename in CommonJS
 const __dirname = dirname(fileURLToPath(import.meta.url));

@@ -10,22 +10,21 @@ const server = http.createServer((req, res) => {
   const { pathname, query } = url.parse(req.url, true);
 
   switch (pathname) {
-    // Overview Route (main route)
     case '/':
-    case '/overview':
+    case '/overview': {
       res.writeHead(200, {
         'Content-type': 'text/html',
       });
       const cardsHtml = products.map((el) => fillTemplate(templates.card, el));
-      const ovewviewPage = templates.overview.replace(
+      const overviewPage = templates.overview.replace(
         '{%PRODUCT_CARDS%}',
         cardsHtml
       );
-      res.end(ovewviewPage);
+      res.end(overviewPage);
       break;
+    }
 
-    // Product Route
-    case '/product':
+    case '/product': {
       res.writeHead(200, {
         'Content-type': 'text/html',
       });
@@ -33,22 +32,24 @@ const server = http.createServer((req, res) => {
       const productPage = fillTemplate(templates.product, product);
       res.end(productPage);
       break;
+    }
 
-    // API
-    case '/api':
+    case '/api': {
       res.writeHead(200, {
         'Content-type': 'application/json',
       });
       res.end(JSON.stringify(products));
       break;
+    }
 
     // 404
-    default:
+    default: {
       res.writeHead(404, {
         'Content-type': 'text/html',
       });
       res.end(`<h1>Page not found!</h1>`);
       break;
+    }
   }
 });
 
