@@ -1,7 +1,7 @@
 {
   "name": "node-farm",
   "version": "1.0.0",
-  "description": "",
+  "description": "Node Farm is a project created with Node, where pages are generated directly from the server (SSR). Also, includes a simple API with native Node.js modules.",
   "main": "index.js",
   "type": "module",
   "license": "AGPL-version-3.0",
@@ -10,22 +10,23 @@
     "node": ">= 14.0.0",
     "npm": ">= 6.0.0"
   },
-  "homepage": "",
   "repository": {
     "type": "git",
     "url": ""
   },
-  "bugs": "",
-  "keywords": [],
+  "keywords": [
+    "node-farm",
+    "node",
+    "nodejs",
+    "ssr"
+  ],
   "author": {
-    "name": "",
-    "email": "",
-    "url": ""
+    "name": "Alexandre Sousa Silva",
+    "url": "https://github.com/alexandresouva"
   },
   "contributors": [],
   "scripts": {
-    "dev": "",
-    "test": ""
+    "dev": "node server.js"
   },
   "dependencies": {},
   "devDependencies": {}
