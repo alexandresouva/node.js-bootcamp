@@ -1,0 +1,21 @@
+{
+  "name": "natours",
+  "version": "1.0.0",
+  "description": "Mastering node, express and mongoDB",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "keywords": [
+    "natours",
+    "node",
+    "express",
+    "mongodb"
+  ],
+  "author": "Alexandre Sousa Silva",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
