@@ -1,6 +1,6 @@
 {
-  "watch": ["app.ts"],
-  "ext": "ts",
+  "watch": ["app.ts", "*.json"],
+  "ext": "ts, json",
   "exec": "node --no-warnings --loader ts-node/esm app.ts",
   "ignore": ["dist/*", "node_modules/*"]
 }
