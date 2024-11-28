@@ -9,7 +9,9 @@ const toursDataPath = path.join(
   'data',
   'tours-simple.json'
 );
-const tours = JSON.parse(fs.readFileSync(toursDataPath, 'utf-8'));
+const tours: { id: number }[] = JSON.parse(
+  fs.readFileSync(toursDataPath, 'utf-8')
+);
 
 // Server
 const app = express();
@@ -31,9 +33,29 @@ app.get('/api/v1/tours', (req, res) => {
   });
 });
 
+app.get('/api/v1/tours/:id', (req, res) => {
+  const { id } = req.params;
+  const tour = tours.find((el) => el.id === Number(id));
+
+  if (!tour) {
+    res.status(404).send({
+      status: 'fail',
+      message: 'Tour not found',
+    });
+    return;
+  }
+
+  res.status(200).send({
+    status: 'success',
+    data: {
+      tour,
+    },
+  });
+});
+
 app.post('/api/v1/tours', (req, res) => {
-  const { _id, ...tour } = req.body;
-  const newId = tours.at(-1).id ?? 0 + 1;
+  const { tour } = req.body;
+  const newId = (tours.at(-1)?.id ?? 0) + 1;
   const newTour = { id: newId, ...tour };
   tours.push(newTour);
 
