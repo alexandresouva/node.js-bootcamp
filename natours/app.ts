@@ -75,3 +75,41 @@ app.post('/api/v1/tours', (req, res) => {
     }
   });
 });
+
+app.patch('/api/v1/tours/:id', (req, res) => {
+  const { id } = req.params;
+  const tour = tours.find((el) => el.id === Number(id));
+
+  if (!tour) {
+    res.status(404).send({
+      status: 'fail',
+      message: 'Tour not found',
+    });
+    return;
+  }
+
+  res.status(200).send({
+    status: 'success',
+    data: {
+      tour: 'Calm down, function not implemented yet',
+    },
+  });
+});
+
+app.delete('/api/v1/tours/:id', (req, res) => {
+  const { id } = req.params;
+  const tour = tours.find((el) => el.id === Number(id));
+
+  if (!tour) {
+    res.status(404).send({
+      status: 'fail',
+      message: 'Tour not found',
+    });
+    return;
+  }
+
+  res.status(204).send({
+    status: 'success',
+    data: null,
+  });
+});
