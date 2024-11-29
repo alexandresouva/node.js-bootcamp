@@ -1,7 +1,8 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 
+// Temporary: only for simulate data
 const __dirname = import.meta.dirname;
 const toursDataPath = path.join(
   __dirname,
@@ -13,17 +14,12 @@ const tours: { id: number }[] = JSON.parse(
   fs.readFileSync(toursDataPath, 'utf-8')
 );
 
-// Server
+// Middlewares
 const app = express();
 app.use(express.json());
 
-const port = 3000;
-app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
-});
-
-// Routes
-app.get('/api/v1/tours', (req, res) => {
+// Routes functions
+const getAllTours = (req: Request, res: Response) => {
   res.status(200).send({
     status: 'success',
     results: tours.length,
@@ -31,9 +27,9 @@ app.get('/api/v1/tours', (req, res) => {
       tours,
     },
   });
-});
+};
 
-app.get('/api/v1/tours/:id', (req, res) => {
+const getTour = (req: Request, res: Response) => {
   const { id } = req.params;
   const tour = tours.find((el) => el.id === Number(id));
 
@@ -51,9 +47,9 @@ app.get('/api/v1/tours/:id', (req, res) => {
       tour,
     },
   });
-});
+};
 
-app.post('/api/v1/tours', (req, res) => {
+const createTour = (req: Request, res: Response) => {
   const { tour } = req.body;
   const newId = (tours.at(-1)?.id ?? 0) + 1;
   const newTour = { id: newId, ...tour };
@@ -74,9 +70,9 @@ app.post('/api/v1/tours', (req, res) => {
       });
     }
   });
-});
+};
 
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req: Request, res: Response) => {
   const { id } = req.params;
   const tour = tours.find((el) => el.id === Number(id));
 
@@ -94,9 +90,9 @@ app.patch('/api/v1/tours/:id', (req, res) => {
       tour: 'Calm down, function not implemented yet',
     },
   });
-});
+};
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTour = (req: Request, res: Response) => {
   const { id } = req.params;
   const tour = tours.find((el) => el.id === Number(id));
 
@@ -112,4 +108,23 @@ app.delete('/api/v1/tours/:id', (req, res) => {
     status: 'success',
     data: null,
   });
+};
+
+// Routes
+// prettier-ignore
+app.
+  route('/api/v1/tours').
+  get(getAllTours).
+  post(createTour);
+
+app
+  .route('/api/v1/tours/:id')
+  .get(getTour)
+  .patch(updateTour)
+  .delete(deleteTour);
+
+// Starting erver
+const port = 3000;
+app.listen(port, () => {
+  console.log(`App running on port ${port}...`);
 });
