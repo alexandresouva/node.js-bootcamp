@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
+import morgan from 'morgan';
 
 // Temporary: only for simulate data
 const __dirname = import.meta.dirname;
@@ -16,6 +17,7 @@ const tours: { id: number }[] = JSON.parse(
 
 // Middlewares
 const app = express();
+app.use(morgan('dev'));
 app.use(express.json());
 
 // Routes functions
@@ -123,7 +125,7 @@ app
   .patch(updateTour)
   .delete(deleteTour);
 
-// Starting erver
+// Starting server
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
