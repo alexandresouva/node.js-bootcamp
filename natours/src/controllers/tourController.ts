@@ -1,12 +1,12 @@
-import express, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
-import morgan from 'morgan';
 
 // Temporary: only for simulate data
 const __dirname = import.meta.dirname;
-const toursDataPath = path.join(
+const toursDataPath = path.resolve(
   __dirname,
+  '../..',
   'dev-data',
   'data',
   'tours-simple.json'
@@ -15,14 +15,8 @@ const tours: { id: number }[] = JSON.parse(
   fs.readFileSync(toursDataPath, 'utf-8')
 );
 
-// Middlewares
-const app = express();
-app.use(morgan('dev'));
-app.use(express.json());
-
-// Routes functions
-const getAllTours = (req: Request, res: Response) => {
-  res.status(200).send({
+export const getAllTours = (req: Request, res: Response) => {
+  res.status(200).json({
     status: 'success',
     results: tours.length,
     data: {
@@ -31,19 +25,19 @@ const getAllTours = (req: Request, res: Response) => {
   });
 };
 
-const getTour = (req: Request, res: Response) => {
+export const getTour = (req: Request, res: Response) => {
   const { id } = req.params;
   const tour = tours.find((el) => el.id === Number(id));
 
   if (!tour) {
-    res.status(404).send({
+    res.status(404).json({
       status: 'fail',
       message: 'Tour not found',
     });
     return;
   }
 
-  res.status(200).send({
+  res.status(200).json({
     status: 'success',
     data: {
       tour,
@@ -51,7 +45,7 @@ const getTour = (req: Request, res: Response) => {
   });
 };
 
-const createTour = (req: Request, res: Response) => {
+export const createTour = (req: Request, res: Response) => {
   const { tour } = req.body;
   const newId = (tours.at(-1)?.id ?? 0) + 1;
   const newTour = { id: newId, ...tour };
@@ -59,12 +53,12 @@ const createTour = (req: Request, res: Response) => {
 
   fs.writeFile(toursDataPath, JSON.stringify(tours), 'utf-8', (err) => {
     if (err) {
-      res.status(500).send({
+      res.status(500).json({
         status: 'error',
         message: 'Could not add tour',
       });
     } else {
-      res.status(201).send({
+      res.status(201).json({
         status: 'success',
         data: {
           tour: newTour,
@@ -74,19 +68,19 @@ const createTour = (req: Request, res: Response) => {
   });
 };
 
-const updateTour = (req: Request, res: Response) => {
+export const updateTour = (req: Request, res: Response) => {
   const { id } = req.params;
   const tour = tours.find((el) => el.id === Number(id));
 
   if (!tour) {
-    res.status(404).send({
+    res.status(404).json({
       status: 'fail',
       message: 'Tour not found',
     });
     return;
   }
 
-  res.status(200).send({
+  res.status(200).json({
     status: 'success',
     data: {
       tour: 'Calm down, function not implemented yet',
@@ -94,39 +88,20 @@ const updateTour = (req: Request, res: Response) => {
   });
 };
 
-const deleteTour = (req: Request, res: Response) => {
+export const deleteTour = (req: Request, res: Response) => {
   const { id } = req.params;
   const tour = tours.find((el) => el.id === Number(id));
 
   if (!tour) {
-    res.status(404).send({
+    res.status(404).json({
       status: 'fail',
       message: 'Tour not found',
     });
     return;
   }
 
-  res.status(204).send({
+  res.status(204).json({
     status: 'success',
     data: null,
   });
 };
-
-// Routes
-// prettier-ignore
-app.
-  route('/api/v1/tours').
-  get(getAllTours).
-  post(createTour);
-
-app
-  .route('/api/v1/tours/:id')
-  .get(getTour)
-  .patch(updateTour)
-  .delete(deleteTour);
-
-// Starting server
-const port = 3000;
-app.listen(port, () => {
-  console.log(`App running on port ${port}...`);
-});
