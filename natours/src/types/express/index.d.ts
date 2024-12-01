@@ -1,4 +1,4 @@
-import { Tour } from '../../schemas/tourSchema.js';
+import { Tour } from '../../schemas/tourSchema.ts';
 
 declare global {
   namespace Express {

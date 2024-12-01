@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { NextFunction, Request, Response } from 'express';
 import { z } from 'zod';
-import { tourSchema } from '../schemas/tourSchema.js';
+import { tourSchema } from '../schemas/tourSchema.ts';
 
 // Temporary: only for simulate data
 const __dirname = import.meta.dirname;

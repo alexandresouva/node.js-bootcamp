@@ -7,7 +7,7 @@ import {
   getTour,
   updateTour,
   validateTourSchema,
-} from '../controllers/tourController.js';
+} from '../controllers/tourController.ts';
 
 const tourRouter = Router();
 tourRouter.param('id', validateTourSchema);
