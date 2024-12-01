@@ -1,13 +1,17 @@
 import { Router } from 'express';
 import {
+  verifyTourExists,
   createTour,
   deleteTour,
   getAllTours,
   getTour,
   updateTour,
+  validateTourSchema,
 } from '../controllers/tourController.js';
 
 const tourRouter = Router();
+tourRouter.param('id', validateTourSchema);
+tourRouter.param('id', verifyTourExists);
 
 // prettier-ignore
 tourRouter

@@ -1,6 +1,8 @@
-import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
+import { NextFunction, Request, Response } from 'express';
+import { z } from 'zod';
+import { tourSchema } from '../schemas/tourSchema.js';
 
 // Temporary: only for simulate data
 const __dirname = import.meta.dirname;
@@ -15,6 +17,47 @@ const tours: { id: number }[] = JSON.parse(
   fs.readFileSync(toursDataPath, 'utf-8')
 );
 
+export const validateTourSchema = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    tourSchema.parse(req.params);
+    next();
+  } catch (err) {
+    if (err instanceof z.ZodError) {
+      return res.status(400).json({
+        status: 'fail',
+        message: `Invalid ${err.errors[0].path[0]}`,
+      });
+    }
+
+    return res.status(500).json({
+      status: 'error',
+      message: 'Internal server error',
+    });
+  }
+};
+
+export const verifyTourExists = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+  id: string
+) => {
+  const tour = tours.find((el) => el.id === Number(id));
+  if (!tour) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Tour not found.',
+    });
+  }
+
+  req.tour = tour;
+  next();
+};
+
 export const getAllTours = (req: Request, res: Response) => {
   res.status(200).json({
     status: 'success',
@@ -26,21 +69,10 @@ export const getAllTours = (req: Request, res: Response) => {
 };
 
 export const getTour = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const tour = tours.find((el) => el.id === Number(id));
-
-  if (!tour) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'Tour not found',
-    });
-    return;
-  }
-
   res.status(200).json({
     status: 'success',
     data: {
-      tour,
+      tour: req.tour,
     },
   });
 };
@@ -69,17 +101,6 @@ export const createTour = (req: Request, res: Response) => {
 };
 
 export const updateTour = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const tour = tours.find((el) => el.id === Number(id));
-
-  if (!tour) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'Tour not found',
-    });
-    return;
-  }
-
   res.status(200).json({
     status: 'success',
     data: {
@@ -89,17 +110,6 @@ export const updateTour = (req: Request, res: Response) => {
 };
 
 export const deleteTour = (req: Request, res: Response) => {
-  const { id } = req.params;
-  const tour = tours.find((el) => el.id === Number(id));
-
-  if (!tour) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'Tour not found',
-    });
-    return;
-  }
-
   res.status(204).json({
     status: 'success',
     data: null,
