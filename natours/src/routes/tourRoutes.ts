@@ -6,23 +6,24 @@ import {
   getAllTours,
   getTour,
   updateTour,
-  validateTourSchema,
+  validateTourBody,
+  validateTourId,
 } from '../controllers/tourController.ts';
 
 const tourRouter = Router();
-tourRouter.param('id', validateTourSchema);
+tourRouter.param('id', validateTourId);
 tourRouter.param('id', verifyTourExists);
 
 // prettier-ignore
 tourRouter
   .route('/')
   .get(getAllTours)
-  .post(createTour);
+  .post(validateTourBody, createTour);
 
 // prettier-ignore
 tourRouter.route('/:id')
   .get(getTour)
-  .patch(updateTour)
+  .patch(validateTourBody, updateTour)
   .delete(deleteTour);
 
 export default tourRouter;

@@ -1,8 +1,9 @@
 import fs from 'fs';
 import path from 'path';
 import { NextFunction, Request, Response } from 'express';
-import { z } from 'zod';
-import { tourSchema } from '../schemas/tourSchema.ts';
+import { Tour, tourSchema } from '../schemas/tourSchema.ts';
+import { validateRequest } from '../middlewares/validationRequestMiddleware.ts';
+import { idSchema } from '../schemas/idSchema.ts';
 
 // Temporary: only for simulate data
 const __dirname = import.meta.dirname;
@@ -13,32 +14,10 @@ const toursDataPath = path.resolve(
   'data',
   'tours-simple.json'
 );
-const tours: { id: number }[] = JSON.parse(
-  fs.readFileSync(toursDataPath, 'utf-8')
-);
+const tours: Tour[] = JSON.parse(fs.readFileSync(toursDataPath, 'utf-8'));
 
-export const validateTourSchema = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    tourSchema.parse(req.params);
-    next();
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      return res.status(400).json({
-        status: 'fail',
-        message: `Invalid ${err.errors[0].path[0]}`,
-      });
-    }
-
-    return res.status(500).json({
-      status: 'error',
-      message: 'Internal server error',
-    });
-  }
-};
+export const validateTourId = validateRequest(idSchema, 'params');
+export const validateTourBody = validateRequest(tourSchema, 'body');
 
 export const verifyTourExists = (
   req: Request,
