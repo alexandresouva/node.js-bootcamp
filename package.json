@@ -1,0 +1,27 @@
+{
+  "name": "node.js-bootcamp",
+  "version": "1.0.0",
+  "description": "Mastering node.js, express and mongodb.",
+  "main": "index.js",
+  "scripts": {
+    "prepare": "husky",
+    "start": "node dist/app.js",
+    "lint": "eslint .",
+    "prettier": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "type": "module",
+  "author": "Alexandre Silva",
+  "license": "ISC",
+  "devDependencies": {
+    "@commitlint/cli": "^19.6.0",
+    "@commitlint/config-conventional": "^19.6.0",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "eslint": "^9.16.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.7",
+    "typescript-eslint": "^8.17.0"
+  }
+}
