@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky",
     "start": "node dist/app.js",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings=0",
     "prettier": "prettier --check .",
     "format": "prettier --write ."
   },
