@@ -1,29 +1,25 @@
 import { Router } from 'express';
 import {
-  verifyTourExists,
   createTour,
   deleteTour,
   getAllTours,
   getTour,
-  updateTour,
-  validateTourBody,
-  validateTourId
+  updateTour
 } from '../controllers/tourController.ts';
 
 const tourRouter = Router();
-tourRouter.param('id', validateTourId);
-tourRouter.param('id', verifyTourExists);
 
 // prettier-ignore
 tourRouter
   .route('/')
   .get(getAllTours)
-  .post(validateTourBody, createTour);
+  .post(createTour);
 
 // prettier-ignore
-tourRouter.route('/:id')
+tourRouter
+  .route('/:id')
   .get(getTour)
-  .patch(validateTourBody, updateTour)
+  .patch(updateTour)
   .delete(deleteTour);
 
 export default tourRouter;

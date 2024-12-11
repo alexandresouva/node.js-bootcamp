@@ -1,0 +1,22 @@
+import mongoose from 'mongoose';
+
+const tourSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'A tour must have a name'],
+    unique: true
+  },
+  price: {
+    type: Number,
+    required: [true, 'A tour must have a price']
+  },
+  rating: {
+    type: Number,
+    min: [1, 'Rating must be at least 1'],
+    max: [5, 'Rating must be at most 5'],
+    default: 4.5
+  }
+});
+
+const Tour = mongoose.model('Tour', tourSchema);
+export default Tour;
