@@ -1,9 +1,15 @@
 import { Request, Response } from 'express';
 import Tour from '../models/tourModel.ts';
+import tourFilterSchema from '../schemas/tourFilterSchema.ts';
 
 export const getAllTours = async (req: Request, res: Response) => {
   try {
-    const tours = await Tour.find();
+    const filters = tourFilterSchema.parse(req.query);
+    filters.sort = filters.sort?.split(',').join(' ') || '--createdAt';
+
+    const query = Tour.find(filters).sort(filters.sort);
+    const tours = await query.exec();
+
     res.status(200).json({
       status: 'success',
       results: tours.length,
@@ -12,8 +18,14 @@ export const getAllTours = async (req: Request, res: Response) => {
       }
     });
   } catch (error) {
-    res.status(404).json({
-      status: 'fail',
+    if (error instanceof Error) {
+      return res.status(400).json({
+        status: 'fail',
+        message: error
+      });
+    }
+    res.status(500).json({
+      status: 'error',
       message: error
     });
   }
@@ -22,6 +34,7 @@ export const getAllTours = async (req: Request, res: Response) => {
 export const getTour = async (req: Request, res: Response) => {
   try {
     const tour = await Tour.findById(req.params.id);
+
     res.status(200).json({
       status: 'success',
       data: {
