@@ -62,5 +62,13 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// Transform the document before send to client
+tourSchema.set('toJSON', {
+  transform: function (_doc, obj) {
+    delete obj.__v;
+    return obj;
+  }
+});
+
 const Tour = mongoose.model('Tour', tourSchema);
 export default Tour;

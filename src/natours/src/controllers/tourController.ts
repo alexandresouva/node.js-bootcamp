@@ -5,14 +5,19 @@ import tourFilterSchema from '../schemas/tourFilterSchema.ts';
 export const getAllTours = async (req: Request, res: Response) => {
   try {
     const filters = tourFilterSchema.parse(req.query);
-    filters.sort = filters.sort?.split(',').join(' ') || '--createdAt';
+    const paginationOffset = (filters.page - 1) * filters.limit;
+    const query = Tour.find(filters)
+      .sort(filters.sort)
+      .select(filters.fields)
+      .skip(paginationOffset)
+      .limit(filters.limit);
 
-    const query = Tour.find(filters).sort(filters.sort);
     const tours = await query.exec();
 
     res.status(200).json({
       status: 'success',
       results: tours.length,
+      hasNextPage: (await Tour.countDocuments()) > paginationOffset,
       data: {
         tours
       }
