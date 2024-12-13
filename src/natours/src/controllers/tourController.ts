@@ -2,29 +2,48 @@ import { Request, Response } from 'express';
 import Tour from '../models/tourModel.ts';
 import tourFilterSchema from '../schemas/tourFilterSchema.ts';
 
+export const applyTopFiveToursQuery = (
+  req: Request,
+  _res: Response,
+  next: Function
+) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+
 export const getAllTours = async (req: Request, res: Response) => {
   try {
-    const filters = tourFilterSchema.parse(req.query);
-    const paginationOffset = (filters.page - 1) * filters.limit;
-    const query = Tour.find(filters)
-      .sort(filters.sort)
-      .select(filters.fields)
+    const parsedParams = tourFilterSchema.parse(req.query);
+    const paginationOffset = (parsedParams.page - 1) * parsedParams.limit;
+    const query = Tour.find(parsedParams)
+      .sort(parsedParams.sort)
+      .select(parsedParams.fields)
       .skip(paginationOffset)
-      .limit(filters.limit);
+      .limit(parsedParams.limit);
 
     const tours = await query.exec();
-
-    res.status(200).json({
+    const responseData = {
       status: 'success',
       results: tours.length,
-      hasNextPage: (await Tour.countDocuments()) > paginationOffset,
+      hasNextPage:
+        req.path === '/'
+          ? (await Tour.countDocuments()) > paginationOffset
+          : undefined,
       data: {
         tours
       }
-    });
+    };
+    // Only show next page in root path
+    if (req.path !== '/') {
+      delete responseData.hasNextPage;
+    }
+
+    res.status(200).json(responseData);
   } catch (error) {
     if (error instanceof Error) {
-      return res.status(400).json({
+      res.status(400).json({
         status: 'fail',
         message: error
       });
